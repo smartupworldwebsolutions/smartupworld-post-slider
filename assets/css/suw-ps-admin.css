@@ -1,0 +1,178 @@
+/* ==========================================================================
+   SmartUpWorld Post Slider — Admin Documentation Page
+   ========================================================================== */
+
+.suw-admin-wrap {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	max-width: 960px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.suw-admin-header {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	background: #fff;
+	border: 1px solid #e2e4e9;
+	border-radius: 12px;
+	padding: 28px 32px;
+	margin-bottom: 24px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.suw-admin-header img {
+	width: 160px;
+	height: auto;
+}
+
+.suw-admin-header-text h1 {
+	margin: 0 0 6px;
+	font-size: 1.5rem;
+	color: #1a1a2e;
+}
+
+.suw-admin-header-text p {
+	margin: 0;
+	color: #555;
+	font-size: 14px;
+}
+
+.suw-admin-header-text a {
+	color: #4065de;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.suw-admin-header-text a:hover {
+	text-decoration: underline;
+}
+
+.suw-badge {
+	display: inline-block;
+	background: linear-gradient(135deg, #4065de, #547cff);
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	padding: 3px 10px;
+	border-radius: 50px;
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.suw-section {
+	background: #fff;
+	border: 1px solid #e2e4e9;
+	border-radius: 12px;
+	padding: 28px 32px;
+	margin-bottom: 22px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.suw-section h2 {
+	margin: 0 0 18px;
+	font-size: 1.1rem;
+	color: #1a1a2e;
+	border-bottom: 2px solid #f0f2f8;
+	padding-bottom: 12px;
+}
+
+/* ── Shortcode Box ───────────────────────────────────────────────────────── */
+.suw-shortcode-box {
+	background: #1a1a2e;
+	color: #a5f3fc;
+	font-family: monospace;
+	font-size: 13px;
+	padding: 14px 18px;
+	border-radius: 8px;
+	margin-bottom: 12px;
+	word-break: break-all;
+	position: relative;
+	padding-right: 80px;
+}
+
+.suw-copy-btn {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	background: #4065de;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 4px 12px;
+	font-size: 11px;
+	cursor: pointer;
+	font-weight: 600;
+	transition: background 0.2s;
+}
+
+.suw-copy-btn:hover {
+	background: #2c3e84;
+}
+
+/* ── Attribute Table ─────────────────────────────────────────────────────── */
+.suw-attr-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.suw-attr-table th {
+	background: #f6f8ff;
+	color: #1a1a2e;
+	font-weight: 700;
+	text-align: left;
+	padding: 10px 14px;
+	border: 1px solid #e2e4e9;
+}
+
+.suw-attr-table td {
+	padding: 9px 14px;
+	border: 1px solid #e2e4e9;
+	color: #444;
+	vertical-align: top;
+}
+
+.suw-attr-table tr:nth-child(even) td {
+	background: #fafbff;
+}
+
+.suw-attr-table code {
+	background: #f0f2f8;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #4065de;
+}
+
+/* ── Examples ────────────────────────────────────────────────────────────── */
+.suw-examples {
+	display: grid;
+	gap: 14px;
+}
+
+.suw-example-label {
+	font-size: 11px;
+	font-weight: 700;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 6px;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.suw-footer {
+	text-align: center;
+	color: #888;
+	font-size: 12px;
+	margin-top: 10px;
+}
+
+.suw-footer a {
+	color: #4065de;
+	text-decoration: none;
+}
+
+.suw-footer a:hover {
+	text-decoration: underline;
+}

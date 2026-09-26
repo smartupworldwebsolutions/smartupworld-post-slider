@@ -1,0 +1,232 @@
+/* ==========================================================================
+   SmartUpWorld Post Slider — Frontend Styles
+   Version: 1.0.0
+   ========================================================================== */
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.suw-post-slider {
+	width: 100%;
+	padding: 48px 0;
+	box-sizing: border-box;
+}
+
+.suw-post-slider .container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 24px;
+	box-sizing: border-box;
+}
+
+/* ── Section Header ──────────────────────────────────────────────────────── */
+.suw-slider-header {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.swb-eyebrow {
+	display: inline-block;
+	background: linear-gradient(135deg, #4065de 0%, #547cff 100%);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	padding: 6px 20px;
+	border-radius: 50px;
+	margin-bottom: 16px;
+}
+
+.suw-slider-title {
+	font-size: clamp(1.6rem, 3vw, 2.2rem);
+	font-weight: 700;
+	color: #1a1a2e;
+	margin: 0 0 10px;
+	line-height: 1.25;
+}
+
+.swb-underline {
+	width: 56px;
+	height: 4px;
+	background: linear-gradient(90deg, #4065de, #547cff);
+	border-radius: 4px;
+	margin: 0 auto 18px;
+}
+
+.suw-slider-subtitle {
+	font-size: 1rem;
+	color: #555;
+	max-width: 580px;
+	margin: 0 auto;
+	line-height: 1.7;
+}
+
+/* ── Slide Item ──────────────────────────────────────────────────────────── */
+.suw-post-slider .owl-carousel .item {
+	padding: 4px 0;
+}
+
+.suw-slide-card {
+	display: block;
+	position: relative;
+	height: 320px;
+	border-radius: 14px;
+	overflow: hidden;
+	text-decoration: none;
+	background: #1a1a2e;
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+	transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.suw-slide-card:hover {
+	box-shadow: 0 8px 30px rgba(64, 101, 222, 0.25);
+	transform: translateY(-3px);
+}
+
+/* ── Thumbnail ───────────────────────────────────────────────────────────── */
+.suw-slide-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.45s ease;
+}
+
+.suw-slide-card:hover .suw-slide-img {
+	transform: scale(1.06);
+}
+
+/* ── No-Image Placeholder ────────────────────────────────────────────────── */
+.suw-slide-no-img {
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(135deg, #2c3e84 0%, #4065de 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* ── Overlay ─────────────────────────────────────────────────────────────── */
+.suw-slide-overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 28px 20px 20px;
+	background: linear-gradient(
+		to top,
+		rgba(10, 14, 40, 0.92) 0%,
+		rgba(10, 14, 40, 0.55) 60%,
+		transparent 100%
+	);
+	color: #fff;
+}
+
+.suw-slide-title {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #fff;
+	margin: 0 0 10px;
+	line-height: 1.45;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* ── Meta ────────────────────────────────────────────────────────────────── */
+.suw-slide-meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 12px;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.suw-slide-author {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+/* ── Read More ───────────────────────────────────────────────────────────── */
+.suw-slide-read {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+	color: #fff;
+	background: rgba(64, 101, 222, 0.82);
+	padding: 5px 14px;
+	border-radius: 50px;
+	transition: background 0.25s ease;
+}
+
+.suw-slide-card:hover .suw-slide-read {
+	background: rgba(64, 101, 222, 1);
+}
+
+/* ── Owl Nav Arrows ──────────────────────────────────────────────────────── */
+.suw-post-slider .owl-nav {
+	margin-top: 18px;
+	text-align: center;
+}
+
+.suw-post-slider .owl-nav button.owl-prev,
+.suw-post-slider .owl-nav button.owl-next {
+	width: 40px;
+	height: 40px;
+	border-radius: 50% !important;
+	background: #4065de !important;
+	color: #fff !important;
+	margin: 0 5px;
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.25s ease, transform 0.2s ease !important;
+	line-height: 1 !important;
+}
+
+.suw-post-slider .owl-nav button.owl-prev:hover,
+.suw-post-slider .owl-nav button.owl-next:hover {
+	background: #2c3e84 !important;
+	transform: scale(1.08);
+}
+
+.suw-post-slider .owl-nav button.disabled {
+	opacity: 0.35;
+	cursor: default;
+	pointer-events: none;
+}
+
+/* ── Owl Dots ────────────────────────────────────────────────────────────── */
+.suw-post-slider .owl-dots {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.suw-post-slider .owl-dots .owl-dot span {
+	background: #d1d5db !important;
+	width: 8px;
+	height: 8px;
+	margin: 4px 5px;
+	transition: background 0.25s ease, width 0.25s ease !important;
+}
+
+.suw-post-slider .owl-dots .owl-dot.active span,
+.suw-post-slider .owl-dots .owl-dot:hover span {
+	background: #4065de !important;
+	width: 22px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+	.suw-post-slider {
+		padding: 32px 0;
+	}
+	.suw-slide-card {
+		height: 280px;
+	}
+}
