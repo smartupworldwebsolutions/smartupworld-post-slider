@@ -2,7 +2,7 @@
 /**
  * Sample projects and one-click demo content.
  *
- * The three sample projects ship with the plugin (images in assets/images),
+ * The sample projects ship with the plugin (images in assets/images),
  * so nothing is downloaded from other sites. Everything the importer creates
  * is flagged with META_FLAG so "Delete demo content" removes exactly that.
  *
@@ -20,32 +20,61 @@ class SUWPF_Demo {
 	const PAGE_TITLE = 'Portfolio Demo';
 
 	/**
-	 * The bundled sample projects.
+	 * The demo projects. The first three (flagged "sample") are also shown as
+	 * built-in samples until the first real project is published; the demo
+	 * import creates all six as editable projects.
 	 *
-	 * The addresses are IANA-reserved example domains, so they can never point
+	 * The addresses use IANA-reserved example domains, so they can never point
 	 * at somebody's real site.
 	 *
-	 * @return array[] title, type, url, image (file name stem in assets/images).
+	 * @return array[] title, type, url, image (file name stem in assets/images), sample.
 	 */
 	public static function projects() {
+		$blog     = __( 'Blog', 'smartupworld-portfolio-showcase' );
+		$business = __( 'Business', 'smartupworld-portfolio-showcase' );
+		$shop     = __( 'E-commerce', 'smartupworld-portfolio-showcase' );
 		return array(
 			array(
-				'title' => __( 'Sample Blog Project', 'smartupworld-portfolio-showcase' ),
-				'type'  => __( 'Blog', 'smartupworld-portfolio-showcase' ),
-				'url'   => 'https://www.example.com/',
-				'image' => 'sample-blog',
+				'title'  => __( 'Sample Blog Project', 'smartupworld-portfolio-showcase' ),
+				'type'   => $blog,
+				'url'    => 'https://www.example.com/',
+				'image'  => 'sample-blog',
+				'sample' => true,
 			),
 			array(
-				'title' => __( 'Sample Business Project', 'smartupworld-portfolio-showcase' ),
-				'type'  => __( 'Business', 'smartupworld-portfolio-showcase' ),
-				'url'   => 'https://www.example.org/',
-				'image' => 'sample-business',
+				'title'  => __( 'Sample Business Project', 'smartupworld-portfolio-showcase' ),
+				'type'   => $business,
+				'url'    => 'https://www.example.org/',
+				'image'  => 'sample-business',
+				'sample' => true,
 			),
 			array(
-				'title' => __( 'Sample Corporate Project', 'smartupworld-portfolio-showcase' ),
-				'type'  => __( 'Business', 'smartupworld-portfolio-showcase' ),
-				'url'   => 'https://www.example.net/',
-				'image' => 'sample-corporate',
+				'title'  => __( 'Sample Fashion Store', 'smartupworld-portfolio-showcase' ),
+				'type'   => $shop,
+				'url'    => 'https://www.example.com/fashion/',
+				'image'  => 'sample-fashion',
+				'sample' => false,
+			),
+			array(
+				'title'  => __( 'Sample Travel Blog', 'smartupworld-portfolio-showcase' ),
+				'type'   => $blog,
+				'url'    => 'https://www.example.org/travel/',
+				'image'  => 'sample-travel',
+				'sample' => false,
+			),
+			array(
+				'title'  => __( 'Sample Corporate Project', 'smartupworld-portfolio-showcase' ),
+				'type'   => $business,
+				'url'    => 'https://www.example.net/',
+				'image'  => 'sample-corporate',
+				'sample' => true,
+			),
+			array(
+				'title'  => __( 'Sample Electronics Store', 'smartupworld-portfolio-showcase' ),
+				'type'   => $shop,
+				'url'    => 'https://www.example.net/shop/',
+				'image'  => 'sample-electronics',
+				'sample' => false,
 			),
 		);
 	}
@@ -58,6 +87,9 @@ class SUWPF_Demo {
 	public static function samples() {
 		$items = array();
 		foreach ( self::projects() as $p ) {
+			if ( empty( $p['sample'] ) ) {
+				continue;
+			}
 			$items[] = array(
 				'title'  => $p['title'],
 				'type'   => $p['type'],

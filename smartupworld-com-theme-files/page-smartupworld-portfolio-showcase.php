@@ -46,7 +46,7 @@ get_header(); ?>
 			<li>Filter tabs built from your project types, with optional counts</li>
 			<li>Responsive grid — 1 to 4 columns per device, full-width background with a centred container</li>
 			<li>Three sample projects appear until you publish your first project, so a new portfolio is never empty</li>
-			<li>One-click demo import — and one-click delete — using images bundled with the plugin</li>
+			<li>One-click demo import of six projects in three types — and one-click delete — using images bundled with the plugin</li>
 			<li>Schema.org structured data, responsive images and accessible filter buttons</li>
 			<li>Lightweight: one small CSS file and one deferred script, loaded only where a portfolio appears</li>
 		</ul>
@@ -150,7 +150,7 @@ get_header(); ?>
 		<h3>Sample projects on a new install</h3>
 		<p>Until you publish your first project, the portfolio shows three built-in sample projects — Sample Blog Project, Sample Business Project and Sample Corporate Project — so you can style the section right away. They are not saved in your database and disappear automatically once a real project is published. Logged-in editors see a short note about this; visitors do not.</p>
 		<h3>Import the demo</h3>
-		<p>Go to <strong>Portfolio → Docs &amp; Demo → Demo content</strong> and click <strong>Import demo content</strong>. It creates the three sample projects as real, editable projects, adds their screenshots to the Media Library, creates the Blog and Business project types and a “Portfolio Demo” page. The screenshots ship with the plugin, so nothing is downloaded from other websites.</p>
+		<p>Go to <strong>Portfolio → Docs &amp; Demo → Demo content</strong> and click <strong>Import demo content</strong>. It creates six real, editable projects — two each for Blog, Business and E-commerce — adds their screenshots to the Media Library, and creates those project types and a “Portfolio Demo” page. The screenshots ship with the plugin, so nothing is downloaded from other websites.</p>
 		<h3>Delete the demo</h3>
 		<p>When you are ready for your own work, open the same tab and click <strong>Delete demo content</strong>. It removes only what the import created — the projects, their images, the demo page and any project types left empty. Projects you added yourself are never touched.</p>
 	</div>

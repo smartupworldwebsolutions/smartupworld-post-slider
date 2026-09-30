@@ -27,7 +27,7 @@ Drop the widget or shortcode on a page and three sample projects appear straight
 * **Portfolio admin section** — add projects with a title, screenshot, website URL and project type.
 * **Filter tabs** built from your project types, with optional counts.
 * **Responsive grid** — 1 to 4 columns per device, full-width background with a centred container.
-* **One-click demo content** — import three sample projects and a demo page, and delete them again with one click.
+* **One-click demo content** — import six editable projects in three types (Blog, Business, E-commerce) plus a demo page, and delete them again with one click.
 * **Bundled sample images** — nothing is downloaded from third-party sites.
 * **Colours via CSS custom properties** — match any brand from the Elementor Style tab.
 * Card order controlled by the standard Order field.

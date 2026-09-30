@@ -247,7 +247,7 @@ class SUWPF_Admin {
 				<li><strong><?php esc_html_e( 'Any editor:', 'smartupworld-portfolio-showcase' ); ?></strong> <?php esc_html_e( 'add this shortcode:', 'smartupworld-portfolio-showcase' ); ?> <code>[suw_portfolio heading="Our Work"]</code></li>
 			</ul>
 			<?php /* translators: %s: demo tab URL */ ?>
-			<p><?php printf( wp_kses( __( 'Want editable example content? <a href="%s">Import the demo content</a> — you can delete it again with one click.', 'smartupworld-portfolio-showcase' ), $link ), esc_url( self::url( 'demo' ) ) ); ?></p>
+			<p><?php printf( wp_kses( __( 'Want a fuller example? <a href="%s">Import the demo content</a> — six editable projects in three types. You can delete it again with one click.', 'smartupworld-portfolio-showcase' ), $link ), esc_url( self::url( 'demo' ) ) ); ?></p>
 		</div>
 		<?php
 	}
@@ -375,7 +375,7 @@ class SUWPF_Admin {
 				<?php endif; ?>
 			<?php else : ?>
 				<h2><?php esc_html_e( 'Import demo content', 'smartupworld-portfolio-showcase' ); ?></h2>
-				<p><?php esc_html_e( 'Adds three sample projects (Blog, Business and Corporate) with screenshots, the Blog and Business project types, and a "Portfolio Demo" page that shows them. The screenshots are bundled with the plugin, so nothing is downloaded from other sites.', 'smartupworld-portfolio-showcase' ); ?></p>
+				<p><?php esc_html_e( 'Adds six editable demo projects with screenshots — two each for Blog, Business and E-commerce — plus those project types and a "Portfolio Demo" page that shows them. The screenshots are bundled with the plugin, so nothing is downloaded from other sites.', 'smartupworld-portfolio-showcase' ); ?></p>
 				<?php if ( $can ) : ?>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="suwpf_import_demo">
