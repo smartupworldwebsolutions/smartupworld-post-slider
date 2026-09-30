@@ -64,14 +64,17 @@
 .suwpf__cta a:hover{color:#fff;transform:translateY(-2px);filter:brightness(.93)}
 
 .suwpf-empty{padding:16px;border:1px dashed #ccc;text-align:center;color:#666}
+.suwpf__notice{max-width:760px;margin:0 auto 28px;padding:10px 16px;font-size:.85rem;line-height:1.6;text-align:center;color:var(--suwpf-dark);background:#FFF8E6;border:1px dashed #E0B252;border-radius:10px}
+.suwpf__notice a{color:var(--suwpf-accent);font-weight:600}
 
 /* Default responsive columns (Elementor's responsive control overrides these) */
 @media (max-width:960px){.suwpf{--suwpf-cols:2;--suwpf-gap:22px}}
 @media (max-width:600px){
 	.suwpf{--suwpf-cols:1;--suwpf-pad:64px}
 	.suwpf__container{padding:0 16px}
-	.suwpf__tabs{width:auto}
-	.suwpf__tab{padding:8px 14px}
+	.suwpf__tabs{width:auto;gap:2px;padding:4px;border-radius:24px}
+	.suwpf__tab{padding:8px 11px;gap:6px;font-size:.85rem}
+	.suwpf__count{padding:3px 6px}
 }
 @media (prefers-reduced-motion:reduce){
 	.suwpf__card,.suwpf__media img,.suwpf__go{transition:none}

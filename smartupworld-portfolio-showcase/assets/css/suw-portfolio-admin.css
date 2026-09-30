@@ -1,0 +1,39 @@
+/* SmartUpWorld Portfolio Showcase — Docs & Demo page */
+.suwpf-admin { max-width: 1040px; }
+.suwpf-admin .suwpf-hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+	gap: 28px;
+	align-items: center;
+	background: linear-gradient(135deg, #0d1b2a, #1565c0);
+	color: #fff;
+	border-radius: 12px;
+	padding: 28px 32px;
+	margin: 16px 0 20px;
+}
+.suwpf-admin .suwpf-hero p { color: #dbe7f5; font-size: 14px; margin: 0 0 14px; }
+.suwpf-admin .suwpf-hero .suwpf-hero__title { color: #fff; font-size: 23px; font-weight: 600; line-height: 1.3; margin: 0 0 8px; }
+.suwpf-admin .suwpf-hero__ver { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 400; background: rgba(255, 255, 255, .18); border-radius: 99px; padding: 2px 10px; vertical-align: middle; }
+.suwpf-admin .suwpf-hero__links { margin: 0; }
+.suwpf-admin .suwpf-hero__links .button { margin: 0 6px 6px 0; }
+.suwpf-admin .suwpf-hero__links .button:not(.button-primary) { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .7); }
+.suwpf-admin .suwpf-hero__links .button:not(.button-primary):hover,
+.suwpf-admin .suwpf-hero__links .button:not(.button-primary):focus { background: #fff; color: #0d1b2a; border-color: #fff; }
+.suwpf-admin .suwpf-hero__shot { display: block; width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); background: #fff; }
+.suwpf-admin .suwpf-tab { margin-top: 20px; }
+.suwpf-admin .suwpf-card { background: #fff; border: 1px solid #dcdcde; border-radius: 8px; padding: 20px 24px; margin: 0 0 16px; }
+.suwpf-admin .suwpf-card h2 { margin-top: 0; }
+.suwpf-admin .suwpf-card code { font-size: 13px; }
+.suwpf-admin pre { background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 6px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; margin: 8px 0 12px; }
+.suwpf-admin table.widefat td, .suwpf-admin table.widefat th { vertical-align: top; }
+.suwpf-admin ol li, .suwpf-admin ul li { margin-bottom: 6px; }
+.suwpf-admin .suwpf-ok { color: #00a32a; }
+.suwpf-admin .suwpf-warn { color: #dba617; }
+.suwpf-admin .suwpf-delete-form .button.delete { color: #b32d2e; border-color: #b32d2e; background: #fff; }
+.suwpf-admin .suwpf-delete-form .button.delete:hover,
+.suwpf-admin .suwpf-delete-form .button.delete:focus { color: #fff; background: #b32d2e; }
+.suwpf-admin .suwpf-delete-form .description { margin-left: 8px; }
+.suwpf-admin .suwpf-footer { color: #646970; margin-top: 24px; }
+@media (max-width: 782px) {
+	.suwpf-admin .suwpf-hero { grid-template-columns: 1fr; padding: 22px; }
+}
