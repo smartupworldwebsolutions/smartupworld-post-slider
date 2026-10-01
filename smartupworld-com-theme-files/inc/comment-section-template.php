@@ -19,6 +19,8 @@ $suwc_mark      = $suwc_req ? $suwc_star : '';
 $suwc_required  = $suwc_req ? ' required' : '';
 
 $suwc_fields = array(
+	// Honeypot: real users never see/fill this; bots that auto-fill forms are caught.
+	'suw_hp' => '<div class="suwc-hp" aria-hidden="true" tabindex="-1"><label for="suw_hp">Leave this field empty</label><input type="text" id="suw_hp" name="suw_hp" value="" autocomplete="off" tabindex="-1"></div>',
 	'author' => sprintf(
 		'<div class="suwc-field suwc-field--author"><label for="author">Name%1$s</label><input id="author" class="suwc-input" name="author" type="text" value="%2$s" maxlength="245" autocomplete="name" placeholder="Your name"%3$s></div>',
 		$suwc_mark,
