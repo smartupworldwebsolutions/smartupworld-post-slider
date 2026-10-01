@@ -79,18 +79,7 @@ function suw_perf_defer_scripts( $tag, $handle ) {
 	return str_replace( ' src=', ' defer src=', $tag );
 }
 
-// ── 6. Remove WordPress version query strings from static assets ─────────────
-// Query strings prevent CDN/proxy caching of CSS and JS files.
-add_filter( 'style_loader_src',  'suw_perf_remove_ver_qs', 9999 );
-add_filter( 'script_loader_src', 'suw_perf_remove_ver_qs', 9999 );
-function suw_perf_remove_ver_qs( $src ) {
-	if ( strpos( $src, 'ver=' ) ) {
-		$src = remove_query_arg( 'ver', $src );
-	}
-	return $src;
-}
-
-// ── 7. Set explicit image dimensions on post thumbnails (CLS fix) ────────────
+// ── 6. Set explicit image dimensions on post thumbnails (CLS fix) ────────────
 // Ensures WordPress outputs width/height attrs so the browser reserves space.
 add_filter( 'wp_get_attachment_image_attributes', 'suw_perf_image_attrs', 10, 3 );
 function suw_perf_image_attrs( $attr, $attachment, $size ) {
@@ -106,7 +95,7 @@ function suw_perf_image_attrs( $attr, $attachment, $size ) {
 	return $attr;
 }
 
-// ── 8. DNS-prefetch for common third-party origins ───────────────────────────
+// ── 7. DNS-prefetch for common third-party origins ───────────────────────────
 add_filter( 'wp_resource_hints', 'suw_perf_dns_prefetch', 10, 2 );
 function suw_perf_dns_prefetch( $hints, $relation_type ) {
 	if ( 'dns-prefetch' !== $relation_type ) {
