@@ -58,28 +58,20 @@ $suwc_grid_end  = static function () {
 ?>
 <section id="comments" class="suwc">
 
-	<?php if ( have_comments() ) : ?>
+	<?php $suwc_count = (int) get_comments_number(); ?>
+	<?php if ( $suwc_count > 0 ) : ?>
 		<h2 class="suwc-title">
 			Comments
-			<span class="suwc-count"><?php echo esc_html( number_format_i18n( get_comments_number() ) ); ?></span>
+			<span class="suwc-count"><?php echo esc_html( number_format_i18n( $suwc_count ) ); ?></span>
 		</h2>
+	<?php endif; ?>
 
-		<ol class="suwc-list">
-			<?php
-			wp_list_comments(
-				array(
-					'style'    => 'ol',
-					'callback' => 'suw_comment_item',
-				)
-			);
-			?>
-		</ol>
+	<div id="suwc-comments-wrap"<?php echo $suwc_count > 0 ? '' : ' hidden'; ?>>
+		<p class="suwc-loading-msg" aria-live="polite">Loading comments&hellip;</p>
+	</div>
 
-		<?php the_comments_pagination(); ?>
-
-		<?php if ( ! comments_open() ) : ?>
-			<p class="suwc-closed">Comments are closed.</p>
-		<?php endif; ?>
+	<?php if ( ! comments_open() && $suwc_count > 0 ) : ?>
+		<p class="suwc-closed">Comments are closed.</p>
 	<?php endif; ?>
 
 	<?php

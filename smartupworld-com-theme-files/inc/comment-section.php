@@ -56,8 +56,15 @@ function suw_comments_assets() {
 				'loadMore'    => 'Load more comments',
 				'loading'     => "Loading…",
 				'noMore'      => 'All comments loaded.',
-				'likeTitle'   => 'Like this comment',
-				'unlikeTitle' => 'Unlike this comment',
+				'likeTitle'    => 'Like this comment',
+				'unlikeTitle'  => 'Unlike this comment',
+				'editComment'  => 'Edit',
+				'deleteComment'=> 'Delete',
+				'saveEdit'     => 'Save',
+				'cancelEdit'   => 'Cancel',
+				'confirmDel'   => "Delete this comment? This cannot be undone.",
+				'deleting'     => "Deleting…",
+				'saving'       => "Saving…",
 			),
 		) ) . ';',
 		'before'
@@ -143,6 +150,52 @@ function suw_ajax_post_comment() {
 			? 'Comment posted!'
 			: 'Your comment is awaiting moderation. Thank you!',
 	) );
+}
+
+// ── AJAX: initial comment list load (bypasses Cloudflare HTML cache) ─────────
+add_action( 'wp_ajax_suw_load_comments',        'suw_ajax_load_comments' );
+add_action( 'wp_ajax_nopriv_suw_load_comments', 'suw_ajax_load_comments' );
+function suw_ajax_load_comments() {
+	check_ajax_referer( 'suw-comment-nonce', 'nonce' );
+
+	$post_id  = absint( isset( $_GET['post_id'] ) ? $_GET['post_id'] : 0 );
+	$per_page = max( 1, (int) get_option( 'comments_per_page', 50 ) );
+
+	if ( ! $post_id || ! get_post( $post_id ) ) {
+		wp_send_json_error();
+	}
+
+	$top_level = get_comments( array(
+		'post_id' => $post_id,
+		'status'  => 'approve',
+		'type'    => 'comment',
+		'parent'  => 0,
+		'number'  => $per_page,
+		'offset'  => 0,
+		'orderby' => 'comment_date_gmt',
+		'order'   => 'ASC',
+	) );
+
+	if ( empty( $top_level ) ) {
+		wp_send_json_success( array( 'html' => '' ) );
+	}
+
+	$base_args = array(
+		'style'       => 'ol',
+		'max_depth'   => (int) get_option( 'thread_comments_depth', 5 ),
+		'format'      => 'html5',
+		'avatar_size' => 44,
+	);
+
+	ob_start();
+	echo '<ol class="suwc-list">';
+	foreach ( $top_level as $cmt ) {
+		suw_render_comment_tree( $cmt, $post_id, $base_args, 1 );
+	}
+	echo '</ol>';
+	$html = ob_get_clean();
+
+	wp_send_json_success( array( 'html' => $html ) );
 }
 
 // ── AJAX: load more comments ──────────────────────────────────────────────────
@@ -245,6 +298,81 @@ function suw_ajax_like_comment() {
 	wp_send_json_success( array( 'count' => $new ) );
 }
 
+// ── Ownership helper ─────────────────────────────────────────────────────────
+function suw_current_user_owns_comment( $comment ) {
+	if ( current_user_can( 'edit_comment', $comment->comment_ID ) ) {
+		return true;
+	}
+	$user = wp_get_current_user();
+	if ( ! $user->exists() ) {
+		return false;
+	}
+	if ( (int) $comment->user_id > 0 && (int) $comment->user_id === (int) $user->ID ) {
+		return true;
+	}
+	if ( ! empty( $comment->comment_author_email )
+		&& strtolower( $comment->comment_author_email ) === strtolower( $user->user_email )
+	) {
+		return true;
+	}
+	return false;
+}
+
+// ── AJAX: edit comment ────────────────────────────────────────────────────────
+add_action( 'wp_ajax_suw_edit_comment', 'suw_ajax_edit_comment' );
+function suw_ajax_edit_comment() {
+	check_ajax_referer( 'suw-comment-nonce', 'nonce' );
+
+	$comment_id = absint( isset( $_POST['comment_id'] ) ? $_POST['comment_id'] : 0 );
+	$comment    = get_comment( $comment_id );
+
+	if ( ! $comment || ! suw_current_user_owns_comment( $comment ) ) {
+		wp_send_json_error( array( 'message' => 'Permission denied.' ) );
+	}
+
+	$text = trim( wp_unslash( isset( $_POST['comment_content'] ) ? $_POST['comment_content'] : '' ) );
+	if ( '' === $text ) {
+		wp_send_json_error( array( 'message' => 'Comment cannot be empty.' ) );
+	}
+
+	$result = wp_update_comment( array(
+		'comment_ID'      => $comment_id,
+		'comment_content' => $text,
+	), true );
+
+	if ( is_wp_error( $result ) ) {
+		wp_send_json_error( array( 'message' => 'Failed to update comment.' ) );
+	}
+
+	wp_send_json_success( array(
+		'html' => apply_filters( 'comment_text', get_comment_field( 'comment_content', $comment_id ) ),
+	) );
+}
+
+// ── AJAX: delete comment ──────────────────────────────────────────────────────
+add_action( 'wp_ajax_suw_delete_comment', 'suw_ajax_delete_comment' );
+function suw_ajax_delete_comment() {
+	check_ajax_referer( 'suw-comment-nonce', 'nonce' );
+
+	$comment_id = absint( isset( $_POST['comment_id'] ) ? $_POST['comment_id'] : 0 );
+	$comment    = get_comment( $comment_id );
+
+	if ( ! $comment || ! suw_current_user_owns_comment( $comment ) ) {
+		wp_send_json_error( array( 'message' => 'Permission denied.' ) );
+	}
+
+	$post_id = (int) $comment->comment_post_ID;
+	$result  = wp_delete_comment( $comment_id, true );
+
+	if ( ! $result ) {
+		wp_send_json_error( array( 'message' => 'Failed to delete comment.' ) );
+	}
+
+	wp_send_json_success( array(
+		'count' => number_format_i18n( (int) get_comments_number( $post_id ) ),
+	) );
+}
+
 // ── Comment item callback ─────────────────────────────────────────────────────
 function suw_comment_item( $comment, $args, $depth ) {
 	$tag     = ( 'div' === $args['style'] ) ? 'div' : 'li';
@@ -328,7 +456,17 @@ function suw_comment_item( $comment, $args, $depth ) {
 						);
 					}
 					edit_comment_link( 'Edit', '', '' );
+					if ( suw_current_user_owns_comment( $comment ) ) :
 					?>
+						<button type="button" class="suwc-owner-btn suwc-edit-btn" data-id="<?php echo $id; ?>" aria-label="Edit comment">
+							<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+							Edit
+						</button>
+						<button type="button" class="suwc-owner-btn suwc-delete-btn" data-id="<?php echo $id; ?>" aria-label="Delete comment">
+							<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+							Delete
+						</button>
+					<?php endif; ?>
 				</div>
 			</div>
 		</article>
@@ -385,6 +523,7 @@ function suw_comments_css() {
 .suwc-load-more:disabled{opacity:.6;cursor:default}
 .suwc-item--new{animation:suwcFadeIn .4s ease}
 @keyframes suwcFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.suwc-loading-msg{color:var(--suwc-muted);font-size:.9375rem;padding:.5rem 0}
 .suwc-closed{margin:1.5rem 0 0;padding:.875rem 1.125rem;border-radius:12px;background:#f8fafc;color:var(--suwc-muted);font-size:.9375rem}
 .suwc-respond{margin-top:2rem;padding:1.75rem;background:#fff;border:1px solid var(--suwc-border);border-radius:var(--radius-card,16px);box-shadow:var(--shadow-soft,0 4px 24px rgba(21,101,192,.1))}
 .suwc>.suwc-respond:first-child{margin-top:0}
@@ -429,7 +568,21 @@ function suw_comments_css() {
 .suwc .suwc-btn svg{flex:none}
 @container (max-width:479px){.suwc .suwc-btn{width:100%}}
 @media (max-width:575px){.suwc-respond{padding:1.25rem}.suwc-list .children{margin-left:.5rem;padding-left:.85rem}.suwc-c{gap:.7rem}}
-@media (prefers-reduced-motion:reduce){.suwc *{transition:none!important;animation:none!important}.suwc .suwc-btn:hover{transform:none}}';
+@media (prefers-reduced-motion:reduce){.suwc *{transition:none!important;animation:none!important}.suwc .suwc-btn:hover{transform:none}}
+.suwc-owner-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem 0;background:none;border:0;font-family:inherit;font-size:.875rem;font-weight:600;cursor:pointer;transition:color .15s}
+.suwc-edit-btn{color:var(--suwc-muted)}
+.suwc-edit-btn:hover{color:var(--suwc-accent)}
+.suwc-delete-btn{color:var(--suwc-muted)}
+.suwc-delete-btn:hover{color:var(--suwc-danger)}
+.suwc-edit-wrap{margin-top:.6rem}
+.suwc-edit-wrap textarea{display:block;width:100%;min-height:6rem;padding:.6rem .85rem;font-family:inherit;font-size:1rem;line-height:1.55;color:var(--suwc-text);background:#fff;border:1px solid var(--suwc-field);border-radius:10px;resize:vertical;outline:2px solid transparent;outline-offset:2px;transition:border-color .15s,box-shadow .15s}
+.suwc-edit-wrap textarea:focus{border-color:var(--suwc-accent);box-shadow:0 0 0 4px var(--suwc-ring)}
+.suwc-edit-controls{display:flex;gap:.6rem;margin-top:.5rem}
+.suwc-edit-save{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:.4rem 1rem;font-family:inherit;font-size:.875rem;font-weight:700;color:#fff;background:var(--suwc-accent);border:0;border-radius:8px;cursor:pointer;transition:background .15s}
+.suwc-edit-save:hover{background:var(--suwc-accent-hover)}
+.suwc-edit-save:disabled{opacity:.6;cursor:default}
+.suwc-edit-cancel{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:.4rem 1rem;font-family:inherit;font-size:.875rem;font-weight:600;color:var(--suwc-muted);background:none;border:1px solid var(--suwc-border);border-radius:8px;cursor:pointer;transition:border-color .15s,color .15s}
+.suwc-edit-cancel:hover{border-color:#9ca3af;color:var(--suwc-text)}';
 }
 
 // ── JavaScript ────────────────────────────────────────────────────────────────
@@ -494,7 +647,7 @@ function initForm(form){
           if(data.html&&!data.pending){
             var pi=qs("[name=comment_parent]",form);
             var pid=pi?parseInt(pi.value,10):0;
-            var list=qs(".suwc-list");
+            var wrap=document.getElementById("suwc-comments-wrap");var list=wrap&&qs(".suwc-list",wrap);
             if(pid>0&&list){
               var pli=document.getElementById("comment-"+pid);
               if(pli){
@@ -512,6 +665,7 @@ function initForm(form){
             var badge=qs(".suwc-count");
             if(badge&&data.count)badge.textContent=data.count;
             initLikes();
+            initEditDelete();
           }
           showMsg(form,data.message||(data.pending?d.i18n.pending:d.i18n.success),false);
           form.reset();
@@ -532,20 +686,17 @@ function initForm(form){
 
 function initLoadMore(){
   if(d.totalPages<=1)return;
-  var section=document.getElementById("comments");
-  var pagination=section&&qs(".comments-pagination",section);
-  var list=section&&qs(".suwc-list",section);
-  if(!pagination||!list)return;
-  var cur=qs(".page-numbers.current",pagination);
-  var currentPage=cur?(parseInt(cur.textContent,10)||1):1;
-  if(currentPage>=d.totalPages)return;
-  pagination.hidden=true;
+  var wrap=document.getElementById("suwc-comments-wrap");
+  var list=wrap&&qs(".suwc-list",wrap);
+  if(!list)return;
+  var existing=qs(".suwc-load-more",wrap);
+  if(existing)return;
   var btn=document.createElement("button");
   btn.type="button";
   btn.className="suwc-load-more";
   btn.textContent=d.i18n.loadMore;
-  pagination.insertAdjacentElement("afterend",btn);
-  var nextPage=currentPage+1;
+  wrap.appendChild(btn);
+  var nextPage=2;
   btn.addEventListener("click",function(){
     btn.disabled=true;
     btn.textContent=d.i18n.loading;
@@ -556,8 +707,9 @@ function initLoadMore(){
           list.insertAdjacentHTML("beforeend",res.data.html);
           nextPage++;
           initLikes();
+          initEditDelete();
           if(res.data.has_more){btn.disabled=false;btn.textContent=d.i18n.loadMore;}
-          else{btn.textContent=d.i18n.noMore;btn.disabled=true;}
+          else{btn.remove();}
         }else{btn.disabled=false;btn.textContent=d.i18n.loadMore;}
       })
       .catch(function(){btn.disabled=false;btn.textContent=d.i18n.loadMore;});
@@ -600,8 +752,114 @@ function initLikes(){
   });
 }
 
+function loadComments(){
+  var wrap=document.getElementById("suwc-comments-wrap");
+  if(!wrap)return;
+  fetch(d.ajaxurl+"?action=suw_load_comments&nonce="+encodeURIComponent(d.nonce)+"&post_id="+d.postId,{credentials:"same-origin"})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.success&&res.data.html){
+        wrap.innerHTML=res.data.html;
+        wrap.removeAttribute("hidden");
+        initLikes();
+        initLoadMore();
+        initEditDelete();
+      }else{
+        wrap.hidden=true;
+      }
+    })
+    .catch(function(){wrap.hidden=true;});
+}
+
+function initEditDelete(){
+  qsa(".suwc-edit-btn").forEach(function(btn){
+    if(btn._suwEdInit)return;
+    btn._suwEdInit=true;
+    btn.addEventListener("click",function(){
+      var cid=btn.dataset.id;
+      var article=document.getElementById("div-comment-"+cid);
+      if(!article||article.querySelector(".suwc-edit-wrap"))return;
+      var textEl=qs(".suwc-c__text",article);
+      if(!textEl)return;
+      var original=textEl.innerHTML;
+      var rawText=textEl.innerText||textEl.textContent;
+      var wrap=document.createElement("div");
+      wrap.className="suwc-edit-wrap";
+      var ta=document.createElement("textarea");
+      ta.value=rawText.trim();
+      var controls=document.createElement("div");
+      controls.className="suwc-edit-controls";
+      var saveBtn=document.createElement("button");
+      saveBtn.type="button";saveBtn.className="suwc-edit-save";saveBtn.textContent=d.i18n.saveEdit;
+      var cancelBtn=document.createElement("button");
+      cancelBtn.type="button";cancelBtn.className="suwc-edit-cancel";cancelBtn.textContent=d.i18n.cancelEdit;
+      controls.appendChild(saveBtn);controls.appendChild(cancelBtn);
+      wrap.appendChild(ta);wrap.appendChild(controls);
+      textEl.hidden=true;
+      textEl.parentNode.insertBefore(wrap,textEl.nextSibling);
+      ta.focus();
+      cancelBtn.addEventListener("click",function(){
+        wrap.remove();textEl.hidden=false;
+      });
+      saveBtn.addEventListener("click",function(){
+        var val=ta.value.trim();
+        if(!val)return;
+        saveBtn.disabled=true;saveBtn.textContent=d.i18n.saving;
+        var body=new FormData();
+        body.append("action","suw_edit_comment");
+        body.append("nonce",d.nonce);
+        body.append("comment_id",cid);
+        body.append("comment_content",val);
+        fetch(d.ajaxurl,{method:"POST",body:body,credentials:"same-origin"})
+          .then(function(r){return r.json();})
+          .then(function(res){
+            if(res.success){
+              textEl.innerHTML=res.data.html||"<p>"+val+"</p>";
+              textEl.hidden=false;
+              wrap.remove();
+            }else{
+              saveBtn.disabled=false;saveBtn.textContent=d.i18n.saveEdit;
+              alert((res.data&&res.data.message)||"Failed to save.");
+            }
+          })
+          .catch(function(){
+            saveBtn.disabled=false;saveBtn.textContent=d.i18n.saveEdit;
+          });
+      });
+    });
+  });
+
+  qsa(".suwc-delete-btn").forEach(function(btn){
+    if(btn._suwDelInit)return;
+    btn._suwDelInit=true;
+    btn.addEventListener("click",function(){
+      if(!confirm(d.i18n.confirmDel))return;
+      var cid=btn.dataset.id;
+      btn.disabled=true;btn.textContent=d.i18n.deleting;
+      var body=new FormData();
+      body.append("action","suw_delete_comment");
+      body.append("nonce",d.nonce);
+      body.append("comment_id",cid);
+      fetch(d.ajaxurl,{method:"POST",body:body,credentials:"same-origin"})
+        .then(function(r){return r.json();})
+        .then(function(res){
+          if(res.success){
+            var li=document.getElementById("comment-"+cid);
+            if(li)li.remove();
+            var badge=qs(".suwc-count");
+            if(badge&&res.data.count!==undefined)badge.textContent=res.data.count;
+          }else{
+            btn.disabled=false;btn.textContent=d.i18n.deleteComment;
+            alert((res.data&&res.data.message)||"Failed to delete.");
+          }
+        })
+        .catch(function(){btn.disabled=false;btn.textContent=d.i18n.deleteComment;});
+    });
+  });
+}
+
 qsa(".suwc-form").forEach(initForm);
-initLoadMore();
+loadComments();
 initLikes();
 }());';
 }
